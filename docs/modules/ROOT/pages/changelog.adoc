@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-10-26: 0.1.1+antora.3
+
+=== Fix: Action checksum check on Windows runners
+
+The Action now hashes the downloaded binary from stdin. Git Bash's `sha256sum` escaped the Windows path and prefixed the hash with a backslash, so the comparison failed on `windows-latest`.
+
 == 2026-10-26: 0.1.0+antora.3
 
 === First release: binaries for Windows, Linux and macOS, and the v0 GitHub Action

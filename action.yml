@@ -55,8 +55,8 @@ runs:
           chmod +x "$out"
           if curl -fsSL --retry 3 -o "$out.sums" "${url%/*}/SHA256SUMS"; then
             want=$(grep " $asset\$" "$out.sums" | cut -d' ' -f1)
-            got=$(sha256sum "$out" 2>/dev/null | cut -d' ' -f1 || shasum -a 256 "$out" | cut -d' ' -f1)
-            [ -z "$got" ] && got=$(shasum -a 256 "$out" | cut -d' ' -f1)
+            got=$( (sha256sum < "$out" 2>/dev/null || shasum -a 256 < "$out") | cut -d' ' -f1)
+            [ -z "$got" ] && got=$(shasum -a 256 < "$out" | cut -d' ' -f1)
             if [ -n "$want" ] && [ "$want" != "$got" ]; then echo "::error::checksum mismatch for $asset"; exit 1; fi
           fi
           echo "Using prebuilt $asset ($VERSION)"

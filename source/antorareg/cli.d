@@ -22,7 +22,7 @@ import antorareg.playbook;
 import antorareg.registry;
 import antorareg.semver;
 
-enum appVersion = "0.1.0";
+enum appVersion = "0.1.1";
 enum buildId = __DATE__ ~ " " ~ __TIME__ ~ ", " ~ __VENDOR__ ~ " " ~ __VERSION__.to!string;
 enum antoraMajor = 3;
 
