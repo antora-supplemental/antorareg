@@ -121,7 +121,7 @@ string gitFetch(string repoUrl, string tag, string subpath, string dest)
 /// Shallow clone of one tag into `co` (line endings untouched). Returns the commit SHA.
 string gitCheckout(string repoUrl, string tag, string co)
 {
-    run(["git", "-c", "core.autocrlf=false", "-c", "advice.detachedHead=false", "clone", "--quiet", "--depth", "1",
+    run(["git", "-c", "core.autocrlf=false", "-c", "core.eol=lf", "-c", "advice.detachedHead=false", "clone", "--quiet", "--depth", "1",
         "--branch", tag, repoUrl, co]);
     return run(["git", "-C", co, "rev-parse", "HEAD"]).strip;
 }
