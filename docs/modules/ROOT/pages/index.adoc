@@ -1,0 +1,43 @@
+= antorareg
+:description: Standalone CLI that installs Antora 3 UI bundles and extensions from the Antora Extensions Registry by editing the playbook in place, with a lockfile.
+
+`antorareg` manages what an Antora 3 playbook pulls in. It resolves packages against the https://registry.antora-supplemental.org[Antora Extensions Registry], fetches them into a gitignored `.antorareg/cache`, edits `antora-playbook.yml` in place, and pins everything in `antorareg.lock`.
+
+It never wraps or runs the `antora` CLI. You keep running `npx antora` yourself.
+
+== Rules it follows
+
+* *Antora 3 only.*
+* *The lockfile is the only record.* No marker comments go in the playbook.
+* *Byte-for-byte edits.* Untouched lines keep their bytes, quoting and line endings.
+* *Overrides belong in `ui.supplemental_files`*, not in edited cache files.
+* *Manual edit, not a guess.* When the playbook uses flow lists, anchors or several YAML documents, `antorareg` prints the change to make and exits with code 4.
+
+== Quick start
+
+[source,console]
+----
+antorareg init
+antorareg install "asset fingerprint"
+antorareg verify
+git add antora-playbook.yml antorareg.lock .gitignore
+----
+
+In CI, restore exactly what the lockfile pins:
+
+[source,console]
+----
+antorareg install --frozen
+antorareg verify --strict
+----
+
+== Exit codes
+
+|===
+|Code |Meaning
+|0 |OK
+|1 |Failure, drift, or (with `--strict`) asset findings
+|2 |Usage error or ambiguous package name
+|3 |Conflict (for example a different UI bundle without `--replace`)
+|4 |Manual playbook edit needed
+|===

@@ -1,0 +1,14 @@
+= Configuration
+
+Settings merge in this order, later wins: the user config file, `.antorareg.yml` next to the playbook, then `ANTORAREG_*` environment variables.
+
+|===
+|Key |Default |Env
+|`registry` |`https://registry.antora-supplemental.org` |`ANTORAREG_REGISTRY`
+|`source` |`git` |`ANTORAREG_SOURCE`
+|`cacheDir` |`.antorareg/cache` |`ANTORAREG_CACHE_DIR`
+|`vendorDir` |`ui` |`ANTORAREG_VENDOR_DIR`
+|`supplementalDir` |`./supplemental-ui` |(file only)
+|===
+
+`antorareg debug-dump` prints the resolved configuration with tokens redacted.

@@ -1,0 +1,22 @@
+# Docs site playbook (LF)
+site:
+  title: Example Docs   # trailing comment
+  start_page: home::index.adoc
+content:
+  sources:
+  - url: .
+    branches: HEAD
+    start_path: docs
+
+ui:
+  bundle:
+    url: https://example.org/ui-bundle.zip
+    snapshot: true
+antora:
+  extensions:
+  - '@antora/lunr-extension'
+  - require: ./lib/local.js
+    config: {a: 1, list: [x, y]}
+asciidoc:
+  attributes:
+    page-pagination: ''

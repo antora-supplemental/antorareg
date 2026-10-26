@@ -1,0 +1,5 @@
+= Changelog history
+:hide-page:
+:navtree-parent: changelog.adoc
+
+Older entries move here when the changelog index grows long. None yet.

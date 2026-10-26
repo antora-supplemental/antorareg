@@ -1,0 +1,11 @@
+# Drift fixture
+site:
+  title: Drift
+ui:
+  bundle:
+    url: https://x.org/ui-bundle.zip
+    snapshot: true
+antora:
+  extensions:
+    - '@antora/lunr-extension'   # hand-written, left alone
+    - require: ./.antorareg/cache/github.com/o/r/ext/lib/index.js

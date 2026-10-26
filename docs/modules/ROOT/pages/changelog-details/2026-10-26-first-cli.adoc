@@ -1,0 +1,10 @@
+= 2026-10-26: First CLI
+:hide-page:
+:navtree-parent: changelog.adoc
+
+* D CLI built with DUB and LDC, editing playbooks through yaml-edit-d so untouched bytes survive.
+* Commands: `install` (with `--frozen`), `update`, `list`, `verify`, `eject`, `remove`, `init`, `migrate`.
+* `antorareg.lock` records per-file `sha256` values.
+* `verify` audits committed and modified copies, tracked cache files and the `.gitignore` line, with `--strict`.
+* `migrate` turns committed copies into lockfile entries, supplemental overrides or ejected packages.
+* Composite GitHub Action (`action.yml`) and a CI matrix for Windows, Linux and macOS on x64 and arm64.

@@ -1,0 +1,26 @@
+= Verify and asset auditing
+
+`antorareg verify` checks three things.
+
+. *Drift*: every lockfile entry is wired into the playbook, and the playbook has no entries pointing into the cache that the lockfile doesn't know.
+. *Cache integrity*: the cached files match the per-file `sha256` values in the lockfile. A mismatch is refetched with a warning.
+. *Assets*: files committed to git that come from a package.
+
+== Asset findings
+
+|===
+|Finding |Meaning |Advice
+
+|`tracked-cache` |A file under `.antorareg/cache` is tracked by git. |`git rm -r --cached .antorareg/cache`
+|`missing-gitignore` |The repo-root `.gitignore` does not ignore the cache. The line is the cache path relative to the repo root, for example `.antorareg/cache/`, or `docs/.antorareg/cache/` for a playbook in `docs/`. |Run `antorareg init`, or add the line.
+|`committed-copy` |A tracked file is byte-identical to a package file. |`antorareg migrate`, or delete the copy.
+|`modified-copy` |A tracked file is an edited copy of a package file, reported as `modified copy of <pkg>@<ver>:<path>`. |Run `antorareg eject <id>`, or move the change into `ui.supplemental_files`.
+|===
+
+Generic file names such as `index.js` or `package.json` only count when the package-relative path matches too.
+
+Ejected packages and files inside `ui.supplemental_files` are exempt. They show up as `info`, not as findings.
+
+== Strict mode
+
+Locally, `verify` only warns about asset findings. `verify --strict` exits 1 on any finding. The GitHub Action runs strict by default.

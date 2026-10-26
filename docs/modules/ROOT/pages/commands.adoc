@@ -1,0 +1,17 @@
+= Commands
+
+|===
+|Command |What it does
+
+|`init` |Creates `antorareg.lock` and adds `.antorareg/cache/` to the repo-root `.gitignore`.
+|`install <name or id>[@range] ...` |Resolves against the registry, fetches into the cache, edits the playbook, writes the lockfile. Names are matched against the catalog; an ambiguous name exits 2.
+|`install --frozen` |Restores the cache from the lockfile without resolving. Fails if a tag moved.
+|`update [<id> ...]` |Newest version within the locked range. `--latest` crosses majors. Ejected packages only get a report.
+|`list [--json] [--offline]` |Installed packages and whether newer releases exist.
+|`verify [--strict] [--json]` |Playbook and lockfile drift, cache integrity, and asset auditing. See xref:verify.adoc[].
+|`eject <id> [--to <dir>]` |Copies the package into the repo (default `ui/<name>`) and points the playbook at the copy. The package is yours from then on.
+|`remove <id>` |Takes the package out of the playbook and the lockfile.
+|`migrate [<name or id>] [--eject] [--yes] [--dry-run]` |Turns committed copies of packages into lockfile entries. See xref:migrate.adoc[].
+|===
+
+Common options: `--playbook <file>`, `--dry-run` (prints the diff), `--save-exact`, `--replace`, `--offline`.

@@ -1,0 +1,18 @@
+= Migrate committed copies
+
+Projects that copied extension or UI files into the repo by hand can move them under `antorareg` with `migrate`.
+
+[source,console]
+----
+antorareg migrate --dry-run
+antorareg migrate asset-fingerprint --eject
+----
+
+`migrate` prints a plan first:
+
+* *Exact copies* become lockfile entries. The playbook points at the cache, the copy is deleted, and you run the printed `git rm --cached` command yourself.
+* *Modified copies* move into `ui.supplemental_files` as overrides. With `--eject`, the package is ejected instead and your edits land in the ejected copy. Extension edits always need `--eject`.
+
+It applies the plan only after you answer `y`, or with `--yes`. `--dry-run` changes nothing. `migrate` never stages or commits; it prints the `git rm --cached` and `git add` commands to run.
+
+`migrate` compares copies against the latest release of each package only.

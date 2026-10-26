@@ -1,0 +1,7 @@
+= Changelog
+
+== 2026-10-26
+
+=== First CLI: install, update, list, verify, eject, remove, init, migrate
+
+xref:changelog-details/2026-10-26-first-cli.adoc[Details]

@@ -1,0 +1,7 @@
+defaults: &d
+  url: https://x/ui-bundle.zip
+ui:
+  bundle: *d
+antora:
+  extensions: &e
+  - a

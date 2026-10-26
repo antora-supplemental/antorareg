@@ -1,0 +1,115 @@
+name: antorareg
+description: Restore the Antora packages pinned in antorareg.lock and verify the playbook, the lockfile and committed assets.
+author: antora-supplemental
+branding:
+  icon: package
+  color: purple
+inputs:
+  playbook:
+    description: Path to the Antora playbook, relative to the workspace.
+    default: antora-playbook.yml
+  version:
+    description: antorareg release to download (for example v0.1.0), or "latest". When no prebuilt binary exists for the runner, the action builds antorareg from source.
+    default: latest
+  verify:
+    description: Run `antorareg verify` after the install.
+    default: "true"
+  strict:
+    description: Fail the job on asset findings (committed or modified copies, tracked cache files, a missing .gitignore line).
+    default: "true"
+outputs:
+  binary:
+    description: Absolute path of the antorareg executable the action used.
+    value: ${{ steps.bin.outputs.path }}
+runs:
+  using: composite
+  steps:
+    - name: Locate the playbook
+      id: pb
+      shell: bash
+      env:
+        PLAYBOOK: ${{ inputs.playbook }}
+      run: |
+        set -euo pipefail
+        if [ ! -f "$PLAYBOOK" ]; then echo "::error::playbook not found: $PLAYBOOK"; exit 2; fi
+        dir=$(dirname "$PLAYBOOK")
+        echo "dir=$dir" >> "$GITHUB_OUTPUT"
+        echo "lock=$dir/antorareg.lock" >> "$GITHUB_OUTPUT"
+
+    - name: Download prebuilt antorareg
+      id: dl
+      shell: bash
+      env:
+        VERSION: ${{ inputs.version }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        set -uo pipefail
+        case "$RUNNER_OS" in Windows) os=windows; ext=.exe;; macOS) os=macos; ext=;; *) os=linux; ext=;; esac
+        case "$RUNNER_ARCH" in ARM64) arch=arm64;; *) arch=x64;; esac
+        asset="antorareg-$os-$arch$ext"
+        if [ "$VERSION" = latest ]; then url="https://github.com/antora-supplemental/antorareg/releases/latest/download/$asset"
+        else url="https://github.com/antora-supplemental/antorareg/releases/download/$VERSION/$asset"; fi
+        mkdir -p "$RUNNER_TEMP/antorareg-bin"
+        out="$RUNNER_TEMP/antorareg-bin/antorareg$ext"
+        if curl -fsSL -o "$out" "$url"; then
+          chmod +x "$out"
+          echo "path=$out" >> "$GITHUB_OUTPUT"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "No prebuilt $asset for $VERSION; building from source."
+          echo "found=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Set up D (source fallback)
+      if: steps.dl.outputs.found != 'true'
+      uses: dlang-community/setup-dlang@v1.4.0
+      with:
+        compiler: ldc-latest
+
+    - name: Build antorareg from source (fallback)
+      id: build
+      if: steps.dl.outputs.found != 'true'
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      run: |
+        set -euo pipefail
+        src="$RUNNER_TEMP/src/antora-supplemental/antorareg"
+        rm -rf "$src"; mkdir -p "$src" "$RUNNER_TEMP/src/dlang-supplemental"
+        cp -R "$ACTION_PATH/." "$src/"
+        if [ ! -d "$RUNNER_TEMP/src/dlang-supplemental/yaml-edit-d" ]; then
+          git clone --depth 1 https://github.com/dlang-supplemental/yaml-edit-d.git "$RUNNER_TEMP/src/dlang-supplemental/yaml-edit-d"
+        fi
+        cd "$src"
+        dub build --compiler=ldc2 -b release -q
+        ext=; [ "$RUNNER_OS" = Windows ] && ext=.exe
+        echo "path=$src/bin/antorareg$ext" >> "$GITHUB_OUTPUT"
+
+    - name: Select binary
+      id: bin
+      shell: bash
+      run: echo "path=${{ steps.dl.outputs.path || steps.build.outputs.path }}" >> "$GITHUB_OUTPUT"
+
+    - name: Cache packages
+      uses: actions/cache@v6.1.0
+      with:
+        path: ${{ steps.pb.outputs.dir }}/.antorareg/cache
+        key: antorareg-${{ runner.os }}-${{ hashFiles(steps.pb.outputs.lock) }}
+
+    - name: antorareg install --frozen
+      shell: bash
+      env:
+        BIN: ${{ steps.bin.outputs.path }}
+        PLAYBOOK: ${{ inputs.playbook }}
+      run: '"$BIN" install --frozen --playbook "$PLAYBOOK"'
+
+    - name: antorareg verify
+      if: inputs.verify == 'true'
+      shell: bash
+      env:
+        BIN: ${{ steps.bin.outputs.path }}
+        PLAYBOOK: ${{ inputs.playbook }}
+        STRICT: ${{ inputs.strict }}
+      run: |
+        flag=; [ "$STRICT" = true ] && flag=--strict
+        "$BIN" verify $flag --playbook "$PLAYBOOK"

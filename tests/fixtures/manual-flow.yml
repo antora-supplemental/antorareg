@@ -1,0 +1,4 @@
+site:
+  title: x
+antora:
+  extensions: [a, b]

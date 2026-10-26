@@ -1,0 +1,3 @@
+= Fixture
+
+A page for the antorareg action test.

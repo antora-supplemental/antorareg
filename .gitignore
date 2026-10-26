@@ -1,0 +1,12 @@
+/bin/
+/.dub/
+dub.selections.json
+*.exe
+*.obj
+*.o
+*.pdb
+*.lst
+antorareg-test-*
+/build/
+.antorareg/cache/
+tests/fixtures/action/.antorareg/cache/

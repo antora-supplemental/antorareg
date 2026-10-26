@@ -1,0 +1,15 @@
+site:
+  title: antorareg action fixture
+  start_page: fixture::index.adoc
+content:
+  sources:
+  - url: .
+    branches: HEAD
+    start_path: tests/fixtures/action/docs
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+antora:
+  extensions:
+  - require: ./.antorareg/cache/github.com/antora-supplemental/antora-ui-chassis/asset-fingerprint/lib/index.js

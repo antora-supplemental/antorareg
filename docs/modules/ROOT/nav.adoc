@@ -1,0 +1,7 @@
+* xref:index.adoc[Overview]
+* xref:commands.adoc[Commands]
+* xref:verify.adoc[Verify and asset auditing]
+* xref:migrate.adoc[Migrate committed copies]
+* xref:github-action.adoc[GitHub Action]
+* xref:configuration.adoc[Configuration]
+* xref:changelog.adoc[Changelog]

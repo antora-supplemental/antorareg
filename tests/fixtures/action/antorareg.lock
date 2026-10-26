@@ -1,0 +1,27 @@
+# antorareg lockfile. Commit it. Edit by hand or with antorareg; the format is the same.
+lockfileVersion: 1
+playbook: antora-playbook.yml
+antora: 3
+packages:
+  github.com/antora-supplemental/antora-ui-chassis/asset-fingerprint:
+    version: 0.1.0+antora.3
+    range: ^0.1.0
+    source: git
+    url: https://github.com/antora-supplemental/antora-ui-chassis.git
+    ref: asset-fingerprint-v0.1.0
+    subdir: packages/asset-fingerprint
+    commit: bd25a012cfe5bee46832f8b901b32290d6a76dc8
+    sha256: 1e9b2d86ab6e1eacf7b7fcc2945a0d1d444038f99b5f34a72a5414c83793d437
+    surface: antora.extensions
+    entry: ./.antorareg/cache/github.com/antora-supplemental/antora-ui-chassis/asset-fingerprint/lib/index.js
+    files:
+      CHANGELOG.adoc: e692fd0eabb176d830dbb6e831e683196f59fda4fe4d479e3365ff3c8381e17f
+      README.adoc: b001d916f9dfc9a08457aa0cbf0a631426f33d8f4cb30ffd2163cb7a60b614b5
+      antora-registry.md: 0a53efd22cd73ae77c72cc66ba46bcdaecca5df99d35df0fb2909ee0ee463e63
+      bin/asset-fingerprint.js: 4e0de48707875073db229d0007d2a3c071746236454667e734b51c5aafb5d8af
+      lib/index.js: abe56a10f625f262245b2d680fe99702afa19d70dbfc3523fc43deab5355fb8d
+      package.json: 15836c93a91d37e8f82cf1ae2a7af6972d3cd090fed6561b1cd14daf074e6c0a
+      test/asset-fingerprint.test.js: af9551200b1d9b1f0f10ff0f8b80349d49d36e25882730d513eced2aafa01584
+      test/fixture/site/_/css/site.css: 74d94aede163ac74eb42fe7cac4066626820fa15001ddf02c3b2d25df8e6c771
+      test/fixture/site/_/js/site.js: 3879a5d930ae1999b278a3a498f7de3fd83ba8dae59330fcfa2db31c103ac21d
+      test/fixture/site/sub/page.html: 7061247f82bf26ce4019288a381e1067817cf4e40d39fb1d7176892960ce0a4c

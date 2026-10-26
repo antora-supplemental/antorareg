@@ -1,0 +1,73 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  build:
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: windows-latest,   target: windows-x64,   ext: .exe }
+          - { os: windows-11-arm,   target: windows-arm64, ext: .exe }
+          - { os: ubuntu-latest,    target: linux-x64,     ext: "" }
+          - { os: ubuntu-24.04-arm, target: linux-arm64,   ext: "" }
+          - { os: macos-14,         target: macos-arm64,   ext: "" }
+    defaults:
+      run:
+        shell: bash
+        working-directory: src/antora-supplemental/antorareg
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          path: src/antora-supplemental/antorareg
+      - uses: actions/checkout@v7.0.1
+        with:
+          repository: dlang-supplemental/yaml-edit-d
+          path: src/dlang-supplemental/yaml-edit-d
+      - uses: dlang-community/setup-dlang@v1.4.0
+        with:
+          compiler: ldc-latest
+      - name: Unit tests
+        run: dub test --compiler=ldc2
+      - name: Build
+        run: dub build --compiler=ldc2 -b release
+      - name: Smoke
+        run: ./bin/antorareg${{ matrix.ext }} --version && ./bin/antorareg${{ matrix.ext }} --help
+      - uses: actions/upload-artifact@v7.0.2
+        with:
+          name: antorareg-${{ matrix.target }}
+          path: src/antora-supplemental/antorareg/bin/antorareg${{ matrix.ext }}
+
+  action:
+    name: action (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - name: Run the action on the fixture playbook
+        id: ar
+        uses: ./
+        with:
+          playbook: tests/fixtures/action/antora-playbook.yml
+          version: v0.0.0-none
+      - name: Strict verify must fail on a committed copy
+        shell: bash
+        run: |
+          set -u
+          bin='${{ steps.ar.outputs.binary }}'
+          d=tests/fixtures/action
+          main=$(find "$d/.antorareg/cache" -name '*.js' -path '*lib*' | head -1)
+          mkdir -p "$d/vendor" && cp "$main" "$d/vendor/"
+          git add -f "$d/vendor"
+          if "$bin" verify --strict --playbook "$d/antora-playbook.yml"; then echo "expected strict failure"; exit 1; fi
+          "$bin" verify --playbook "$d/antora-playbook.yml"

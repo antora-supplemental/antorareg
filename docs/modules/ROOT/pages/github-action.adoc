@@ -1,0 +1,28 @@
+= GitHub Action
+
+[source,yaml]
+----
+- uses: actions/checkout@v7.0.1
+- uses: antora-supplemental/antorareg@v0
+  with:
+    playbook: antora-playbook.yml
+- run: npx antora antora-playbook.yml
+----
+
+The action:
+
+. Downloads the prebuilt binary for the runner (`antorareg-<os>-<arch>`) from the release named by `version`. When none exists, it builds from source with `dlang-community/setup-dlang`, copying the action to `$RUNNER_TEMP/src/antora-supplemental/antorareg` and cloning `yaml-edit-d` beside it.
+. Caches `.antorareg/cache` with `actions/cache`, keyed on the lockfile hash.
+. Runs `antorareg install --frozen`, then `antorareg verify` (strict by default).
+
+|===
+|Input |Default |Meaning
+|`playbook` |`antora-playbook.yml` |Playbook path
+|`version` |`latest` |Release tag of the binary
+|`verify` |`true` |Run verify after the install
+|`strict` |`true` |Fail on asset findings
+|===
+
+Output `binary` is the path of the executable.
+
+NOTE: The `v0` tag doesn't exist yet. Until it does, pin a commit SHA.
