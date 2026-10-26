@@ -35,7 +35,7 @@ antorareg eject asset-fingerprint
 antorareg migrate --dry-run
 ```
 
-In GitHub Actions (needs the `v0` tag; pin a SHA until it exists):
+In GitHub Actions:
 
 ```yaml
 - uses: antora-supplemental/antorareg@v0

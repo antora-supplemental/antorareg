@@ -1,5 +1,11 @@
 = Changelog
 
+== 2026-10-26: 0.1.0+antora.3
+
+=== First release: binaries for Windows, Linux and macOS, and the v0 GitHub Action
+
+xref:changelog-details/2026-10-26-v0.1.0.adoc[Details]
+
 == 2026-10-26
 
 === First CLI: install, update, list, verify, eject, remove, init, migrate

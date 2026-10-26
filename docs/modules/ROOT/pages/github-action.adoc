@@ -18,11 +18,11 @@ The action:
 |===
 |Input |Default |Meaning
 |`playbook` |`antora-playbook.yml` |Playbook path
-|`version` |`latest` |Release tag of the binary
+|`version` |`v0` |Release tag of the binary (checked against the release `SHA256SUMS`)
 |`verify` |`true` |Run verify after the install
 |`strict` |`true` |Fail on asset findings
 |===
 
 Output `binary` is the path of the executable.
 
-NOTE: The `v0` tag doesn't exist yet. Until it does, pin a commit SHA.
+Pin `@v0` to float on 0.x releases, or `@v0.1.0` for an exact version.

@@ -1,0 +1,11 @@
+= 2026-10-26: 0.1.0+antora.3
+:hide-page:
+:navtree-parent: changelog.adoc
+
+First tagged release (`v0.1.0`), for Antora 3.
+
+* Release binaries with a `SHA256SUMS` file: `windows-x64`, `windows-arm64`, `linux-x64`, `linux-arm64`, `macos-arm64`.
+* `antora-supplemental/antorareg@v0` downloads the matching binary, checks it against `SHA256SUMS`, and falls back to building from source.
+* Rolling `v0` and `v0.1` releases follow the newest 0.x release.
+* New extension entries copy their siblings' quoting style (yaml-edit-d 303d599), so `require:` values are no longer single-quoted.
+* Includes everything in xref:changelog-details/2026-10-26-first-cli.adoc[the first CLI].

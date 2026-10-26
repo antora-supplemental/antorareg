@@ -9,8 +9,8 @@ inputs:
     description: Path to the Antora playbook, relative to the workspace.
     default: antora-playbook.yml
   version:
-    description: antorareg release to download (for example v0.1.0), or "latest". When no prebuilt binary exists for the runner, the action builds antorareg from source.
-    default: latest
+    description: antorareg release to download (for example v0.1.0, the rolling v0, or "latest"). When no prebuilt binary exists for the runner, the action builds antorareg from source.
+    default: v0
   verify:
     description: Run `antorareg verify` after the install.
     default: "true"
@@ -51,8 +51,15 @@ runs:
         else url="https://github.com/antora-supplemental/antorareg/releases/download/$VERSION/$asset"; fi
         mkdir -p "$RUNNER_TEMP/antorareg-bin"
         out="$RUNNER_TEMP/antorareg-bin/antorareg$ext"
-        if curl -fsSL -o "$out" "$url"; then
+        if curl -fsSL --retry 3 -o "$out" "$url"; then
           chmod +x "$out"
+          if curl -fsSL --retry 3 -o "$out.sums" "${url%/*}/SHA256SUMS"; then
+            want=$(grep " $asset\$" "$out.sums" | cut -d' ' -f1)
+            got=$(sha256sum "$out" 2>/dev/null | cut -d' ' -f1 || shasum -a 256 "$out" | cut -d' ' -f1)
+            [ -z "$got" ] && got=$(shasum -a 256 "$out" | cut -d' ' -f1)
+            if [ -n "$want" ] && [ "$want" != "$got" ]; then echo "::error::checksum mismatch for $asset"; exit 1; fi
+          fi
+          echo "Using prebuilt $asset ($VERSION)"
           echo "path=$out" >> "$GITHUB_OUTPUT"
           echo "found=true" >> "$GITHUB_OUTPUT"
         else
