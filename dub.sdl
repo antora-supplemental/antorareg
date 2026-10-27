@@ -4,7 +4,7 @@ authors "Ryan Johnson"
 copyright "Copyright © 2026, antora-supplemental"
 license "MIT"
 homepage "https://github.com/antora-supplemental/antorareg"
-dependency "yaml-edit" path="../../dlang-supplemental/yaml-edit-d"
+dependency "yaml-edit" version="~>0.1.0"
 targetPath "bin"
 
 configuration "application" {

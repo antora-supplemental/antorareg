@@ -45,17 +45,23 @@ In GitHub Actions:
 
 ## Building
 
-Clone [yaml-edit-d](https://github.com/dlang-supplemental/yaml-edit-d) beside this repo:
-
-```
-<root>/antora-supplemental/antorareg
-<root>/dlang-supplemental/yaml-edit-d
-```
+DUB fetches [yaml-edit](https://code.dlang.org/packages/yaml-edit) from the registry.
 
 ```console
 dub test --compiler=ldc2
 dub build --compiler=ldc2 -b release
 ```
+
+### Testing against a local yaml-edit-d checkout
+
+Register the checkout so DUB prefers it over the registry copy (its version comes from its git tag, so it must satisfy `~>0.1.0`):
+
+```console
+dub add-local ../../dlang-supplemental/yaml-edit-d
+dub test --compiler=ldc2
+```
+
+Undo with `dub remove-local ../../dlang-supplemental/yaml-edit-d`. Do not use the deprecated `dub add-override`.
 
 ## License
 

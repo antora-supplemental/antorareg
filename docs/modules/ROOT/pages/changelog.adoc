@@ -1,5 +1,11 @@
 = Changelog
 
+== Unreleased
+
+=== Change: yaml-edit comes from the DUB registry
+
+antorareg now depends on `yaml-edit ~>0.1.0` from code.dlang.org instead of a sibling yaml-edit-d checkout. CI, release and the Action's source fallback no longer clone yaml-edit-d. Use `dub add-local` to test against a local checkout (see the README).
+
 == 2026-10-26: 0.1.1+antora.3
 
 === Fix: Action checksum check on Windows runners

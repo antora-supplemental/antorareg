@@ -82,11 +82,8 @@ runs:
       run: |
         set -euo pipefail
         src="$RUNNER_TEMP/src/antora-supplemental/antorareg"
-        rm -rf "$src"; mkdir -p "$src" "$RUNNER_TEMP/src/dlang-supplemental"
+        rm -rf "$src"; mkdir -p "$src"
         cp -R "$ACTION_PATH/." "$src/"
-        if [ ! -d "$RUNNER_TEMP/src/dlang-supplemental/yaml-edit-d" ]; then
-          git clone --depth 1 https://github.com/dlang-supplemental/yaml-edit-d.git "$RUNNER_TEMP/src/dlang-supplemental/yaml-edit-d"
-        fi
         cd "$src"
         dub build --compiler=ldc2 -b release -q
         ext=; [ "$RUNNER_OS" = Windows ] && ext=.exe
